@@ -64,6 +64,7 @@ def on_unary_minus():
 # Создаем основное окно
 root = tk.Tk()
 root.title("Калькулятор")
+root.resizable(width=False, height=False)
 
 # Прямоугольник под полем для ввода символов
 canvas = tk.Canvas(root, width=400, height=40)
@@ -71,7 +72,7 @@ canvas.grid(row=0, column=0, columnspan=4, pady=5)
 canvas.create_rectangle(0, 0, 400, 40, outline='gray', fill='gray')
 
 # Виджет для отображения текста (метка) с отступом
-label = ttk.Label(root, text="", font=('Arial', 14))
+label = ttk.Label(root, text="", font=('Arial', 14), width=34)
 label.grid(row=0, column=0, columnspan=4, sticky='w', padx=10)
 
 # Кнопки для цифр и операций
