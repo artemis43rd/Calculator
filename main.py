@@ -74,10 +74,18 @@ def on_unary_minus():
 def on_trig_func(func):
     current_text = expression_var.get()
     if current_text and current_text[-1] not in ('+', '-', '*', '/', '.', '^', '('):
-        current_text += '*'+func+'('
-    else:
-        current_text += func + '('
-    expression_var.set(current_text)
+        infix_expression = expression_var.get()
+        try:
+            result = eval(infix_expression.replace('^', '**'))
+            if func == 'sin':
+                expression_var.set(str(math.sin(result)))
+            if func == 'cos':
+                expression_var.set(str(math.cos(result)))
+            if func == 'exp':
+                expression_var.set(str(math.exp(result)))
+        except Exception as e:
+            messagebox.showerror("Error", "Invalid expression")
+            expression_var.set("")
 
 
 # Создаем основное окно
@@ -121,9 +129,9 @@ ttk.Button(root, text='C', command=on_clear).grid(row=7, column=2, padx=5, pady=
 ttk.Button(root, text='DEL', command=on_delete).grid(row=7, column=1, padx=5, pady=5)
 ttk.Button(root, text='=', command=on_calculate).grid(row=5, column=3, padx=5, pady=5)
 ttk.Button(root, text='±', command=on_unary_minus).grid(row=5, column=2, padx=5, pady=5)
-ttk.Button(root, text ='sin', command=lambda: on_trig_func('sin')).grid(row=6,column=0,padx=5, pady=5)
-ttk.Button(root, text ='cos', command=lambda: on_trig_func('cos')).grid(row=6,column=1,padx=5, pady=5)
-ttk.Button(root, text ='exp', command=lambda: on_trig_func('exp')).grid(row=6,column=2,padx=5, pady=5)
+ttk.Button(root, text='sin', command=lambda: on_trig_func('sin')).grid(row=6,column=0,padx=5, pady=5)
+ttk.Button(root, text='cos', command=lambda: on_trig_func('cos')).grid(row=6,column=1,padx=5, pady=5)
+ttk.Button(root, text='exp', command=lambda: on_trig_func('exp')).grid(row=6,column=2,padx=5, pady=5)
 
 # Привязываем событие нажатия клавиши к функции on_key_press
 root.bind('<KeyPress>', on_key_press)
