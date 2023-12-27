@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
-
+import math
 
 def on_button_click(button_text):
     current_text = expression_var.get()
@@ -18,9 +18,13 @@ def on_button_click(button_text):
         on_unary_minus()
         return
 
+    if button_text in('cos', 'sin', 'exp'):
+        on_trig_func(button_text)
+        return
+
     # Ограничение на количество цифр в текущем операнде
     if button_text.isdigit() and '.' not in current_text:
-        operand = current_text.split('+')[-1].split('-')[-1].split('*')[-1].split('/')[0]
+        operand = current_text.split('+')[-1].split('-')[-1].split('*')[-1].split('/')[-1]
         if len(operand.replace('-', '')) >= 15:
             return
 
@@ -48,7 +52,6 @@ def on_delete():
     current_text = expression_var.get()
     expression_var.set(current_text[:-1])
 
-
 def on_calculate():
     infix_expression = expression_var.get()
     try:
@@ -63,10 +66,18 @@ def on_unary_minus():
     current_text =expression_var.get()
 
     # Добавляем унарный минус только если текущее выражение не пусто
-    if current_text and not current_text.startswith('-'):
+    if current_text and not current_text[0] == '-':
         expression_var.set('-' + current_text)
     elif current_text and current_text.startswith('-'):
         expression_var.set(current_text[1:])
+
+def on_trig_func(func):
+    current_text = expression_var.get()
+    if current_text and current_text[-1] not in ('+', '-', '*', '/', '.', '^', '('):
+        current_text += '*'+func+'('
+    else:
+        current_text += func + '('
+    expression_var.set(current_text)
 
 
 # Создаем основное окно
@@ -106,10 +117,13 @@ for button in buttons:
 # Кнопки для дополнительных операций
 ttk.Button(root, text='(', command=lambda: on_button_click('(')).grid(row=5, column=0, padx=5, pady=5)
 ttk.Button(root, text=')', command=lambda: on_button_click(')')).grid(row=5, column=1, padx=5, pady=5)
-ttk.Button(root, text='C', command=on_clear).grid(row=6, column=2, padx=5, pady=5)
-ttk.Button(root, text='DEL', command=on_delete).grid(row=6, column=1, padx=5, pady=5)
+ttk.Button(root, text='C', command=on_clear).grid(row=7, column=2, padx=5, pady=5)
+ttk.Button(root, text='DEL', command=on_delete).grid(row=7, column=1, padx=5, pady=5)
 ttk.Button(root, text='=', command=on_calculate).grid(row=5, column=3, padx=5, pady=5)
 ttk.Button(root, text='±', command=on_unary_minus).grid(row=5, column=2, padx=5, pady=5)
+ttk.Button(root, text ='sin', command=lambda: on_trig_func('sin')).grid(row=6,column=0,padx=5, pady=5)
+ttk.Button(root, text ='cos', command=lambda: on_trig_func('cos')).grid(row=6,column=1,padx=5, pady=5)
+ttk.Button(root, text ='exp', command=lambda: on_trig_func('exp')).grid(row=6,column=2,padx=5, pady=5)
 
 # Привязываем событие нажатия клавиши к функции on_key_press
 root.bind('<KeyPress>', on_key_press)
