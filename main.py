@@ -18,9 +18,6 @@ def on_button_click(button_text):
         on_unary_minus()
         return
 
-    if button_text in('cos', 'sin', 'exp'):
-        on_trig_func(button_text)
-        return
 
     # Ограничение на количество цифр в текущем операнде
     if button_text.isdigit() and '.' not in current_text:
@@ -79,10 +76,16 @@ def on_trig_func(func):
             result = eval(infix_expression.replace('^', '**'))
             if func == 'sin':
                 expression_var.set(str(math.sin(result)))
-            if func == 'cos':
+            elif func == 'cos':
                 expression_var.set(str(math.cos(result)))
-            if func == 'exp':
+            elif func == 'exp':
                 expression_var.set(str(math.exp(result)))
+            elif func == 'sqrt' and result >= 0:
+                expression_var.set(str(math.sqrt(result)))
+            else:
+                messagebox.showerror("Error", "Значение меньше нуля")
+                expression_var.set("")
+
         except Exception as e:
             messagebox.showerror("Error", "Invalid expression")
             expression_var.set("")
@@ -132,6 +135,7 @@ ttk.Button(root, text='±', command=on_unary_minus).grid(row=5, column=2, padx=5
 ttk.Button(root, text='sin', command=lambda: on_trig_func('sin')).grid(row=6,column=0,padx=5, pady=5)
 ttk.Button(root, text='cos', command=lambda: on_trig_func('cos')).grid(row=6,column=1,padx=5, pady=5)
 ttk.Button(root, text='exp', command=lambda: on_trig_func('exp')).grid(row=6,column=2,padx=5, pady=5)
+ttk.Button(root, text='sqrt', command=lambda: on_trig_func('sqrt')).grid(row=6,column=3,padx=5, pady=5)
 
 # Привязываем событие нажатия клавиши к функции on_key_press
 root.bind('<KeyPress>', on_key_press)
